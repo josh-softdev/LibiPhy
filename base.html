@@ -1,0 +1,37 @@
+from django.db import models
+
+class Document(models.Model):
+    title = models.CharField(max_length=255)
+    author = models.CharField(max_length=255)
+    year = models.IntegerField()
+    abstract = models.TextField()
+    file = models.FileField(upload_to='documents/')
+    available_copies = models.IntegerField(default=1)
+
+    def __str__(self):
+        return self.title
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class DocumentTag(models.Model):
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+
+
+class Borrowing(models.Model):
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    borrower_name = models.CharField(max_length=200)
+    borrow_date = models.DateField(auto_now_add=True)
+    return_date = models.DateField(null=True, blank=True)
+
+
+class Reservation(models.Model):
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    reserver_name = models.CharField(max_length=200)
+    reservation_date = models.DateField(auto_now_add=True)
